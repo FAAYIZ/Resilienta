@@ -16,10 +16,10 @@ export default function Footer() {
         
         {/* Direct Hotline Cards */}
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-brand-text mb-4 flex items-center space-x-2">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-brand-text mb-4 flex items-center space-x-2">
             <ShieldAlert className="h-4 w-4 text-red-500 animate-pulse" />
             <span>24/7 Professional Crisis Support Hotlines</span>
-          </h4>
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {HELPLINES.map((line) => (
               <a
@@ -50,19 +50,19 @@ export default function Footer() {
         {/* Informational and Privacy Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-brand-border pt-6 text-xs leading-relaxed">
           <div className="space-y-2">
-            <h5 className="font-semibold text-brand-text flex items-center space-x-1.5">
+            <h3 className="font-semibold text-brand-text flex items-center space-x-1.5">
               <Eye className="h-4.5 w-4.5 text-indigo-400" />
               <span>Privacy & Security</span>
-            </h5>
+            </h3>
             <p>
               Your safety is our priority. Resilienta does not store your voice files or transcriptions. Speech processing runs locally on your browser via the Web Speech API. GenAI requests use secure pipelines with zero retention policies.
             </p>
           </div>
           <div className="space-y-2">
-            <h5 className="font-semibold text-brand-text flex items-center space-x-1.5">
+            <h3 className="font-semibold text-brand-text flex items-center space-x-1.5">
               <ShieldAlert className="h-4.5 w-4.5 text-rose-400" />
               <span>Clinical Disclaimer</span>
-            </h5>
+            </h3>
             <p>
               Resilienta is a GenAI-assisted support platform designed to help navigate moments of high cognitive load and cravings. It is NOT a medical device, therapeutic resource, or replacement for professional clinical care. In any critical health crisis, please call 911 immediately.
             </p>

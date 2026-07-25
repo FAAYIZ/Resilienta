@@ -164,9 +164,9 @@ export default function App() {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
                       <MessageSquare className="h-4.5 w-4.5 text-indigo-400" />
-                      <h3 className="text-sm font-bold text-brand-text">
+                      <h2 className="text-sm font-bold text-brand-text">
                         {script ? 'Refine Script with Extra Context' : 'Select a Quick Action above, or describe your state below'}
-                      </h3>
+                      </h2>
                     </div>
                     <VoiceInput 
                       onSubmit={handleInputSubmit} 
@@ -192,9 +192,9 @@ export default function App() {
             
             {/* Quick Grounding breathing promo */}
             <div className="p-6 bg-gradient-to-br from-indigo-950/20 to-brand-card rounded-2xl border border-brand-border space-y-4 shadow-lg">
-              <h4 className="font-bold text-sm text-brand-text flex items-center space-x-2">
+              <h2 className="font-bold text-sm text-brand-text flex items-center space-x-2">
                 <span>Immediate Grounding Tips</span>
-              </h4>
+              </h2>
               <ul className="text-xs text-brand-muted space-y-2.5 list-disc pl-4 leading-relaxed">
                 <li>
                   <strong className="text-indigo-300">Drop your shoulders:</strong> Release the physical tension in your neck.
@@ -212,7 +212,7 @@ export default function App() {
             <div className="p-6 bg-red-950/10 border border-red-500/20 rounded-2xl space-y-3 shadow-lg">
               <div className="flex items-center space-x-2 text-red-400">
                 <AlertCircle className="h-4 w-4" />
-                <h4 className="font-bold text-xs uppercase tracking-wider">Urgent Assistance</h4>
+                <h2 className="font-bold text-xs uppercase tracking-wider">Urgent Assistance</h2>
               </div>
               <p className="text-xs text-brand-muted leading-relaxed">
                 If you are in immediate danger of using substances, harming yourself, or if you feel completely unsafe, please utilize the 24/7 hotline links in the footer below. You do not have to struggle alone.
