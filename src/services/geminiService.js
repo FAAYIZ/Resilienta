@@ -12,7 +12,7 @@ const getApiKey = () => {
 };
 
 /**
- * Generates an emergency script using Gemini 1.5 Flash based on action type and voice context.
+ * Generates an emergency script using Gemini 2.0 Flash based on action type and voice context.
  * 
  * @param {string} actionType - 'sos', 'de_escalation', or 'refusal'
  * @param {string} voiceContext - Optional transcript from the user's voice input
@@ -20,7 +20,7 @@ const getApiKey = () => {
  */
 export async function generateEmergencyScript(actionType, voiceContext = "") {
   const apiKey = getApiKey();
-  
+
   if (!apiKey || apiKey.trim() === "" || apiKey === "your_gemini_api_key_here") {
     console.warn(`[GeminiService] API key not found. Using pre-verified fallback script for: ${actionType}`);
     return getFallbackScript(actionType, "API Key is missing. Please set VITE_GEMINI_API_KEY in your .env file.");
@@ -28,22 +28,22 @@ export async function generateEmergencyScript(actionType, voiceContext = "") {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
     // Select correct prompt template
     const basePrompt = GEMINI_PROMPTS[actionType] || GEMINI_PROMPTS.sos;
-    const finalPrompt = voiceContext 
+    const finalPrompt = voiceContext
       ? `${basePrompt}\nUser Voice Input / Additional Context: "${voiceContext}"`
       : `${basePrompt}\nNo additional context provided. Generate a generic helper script.`;
 
     const result = await model.generateContent(finalPrompt);
     const response = await result.response;
     const text = response.text();
-    
+
     if (!text) {
       throw new Error("Empty response received from Gemini API.");
     }
-    
+
     return text;
   } catch (error) {
     console.error("[GeminiService] Error calling Gemini API:", error);
@@ -59,7 +59,7 @@ export async function generateEmergencyScript(actionType, voiceContext = "") {
  */
 export async function askCopingQuestion(question) {
   const apiKey = getApiKey();
-  
+
   if (!apiKey || apiKey.trim() === "" || apiKey === "your_gemini_api_key_here") {
     console.warn("[GeminiService] API key not found. Using preset responses for Coping Hub.");
     return `### Educational Boundary Guide (Offline Mode)
@@ -74,18 +74,18 @@ It looks like the Gemini API Key is missing or invalid. Here are immediate tips 
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
     const basePrompt = GEMINI_PROMPTS.coping_hub.replace("[QUESTION]", question);
-    
+
     const result = await model.generateContent(basePrompt);
     const response = await result.response;
     const text = response.text();
-    
+
     if (!text) {
       throw new Error("Empty response received from Gemini API.");
     }
-    
+
     return text;
   } catch (error) {
     console.error("[GeminiService] Error asking coping question:", error);
@@ -111,7 +111,7 @@ function getFallbackScript(type, reason) {
   };
 
   const selectedScript = scripts[type] || scripts.sos;
-  
+
   return `> [!NOTE]
 > **Resilienta Secure Fallback Mode Enabled**
 > The system is currently running on localized protocols (Reason: ${reason}). These steps are curated from standard SUD crisis resources.
