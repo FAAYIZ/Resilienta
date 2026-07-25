@@ -12,7 +12,7 @@ const getApiKey = () => {
 };
 
 /**
- * Generates an emergency script using Gemini 2.0 Flash based on action type and voice context.
+ * Generates an emergency script using Gemini 2.0 Flash Lite based on action type and voice context.
  * 
  * @param {string} actionType - 'sos', 'de_escalation', or 'refusal'
  * @param {string} voiceContext - Optional transcript from the user's voice input
@@ -28,7 +28,7 @@ export async function generateEmergencyScript(actionType, voiceContext = "") {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
 
     // Select correct prompt template
     const basePrompt = GEMINI_PROMPTS[actionType] || GEMINI_PROMPTS.sos;
@@ -74,7 +74,7 @@ It looks like the Gemini API Key is missing or invalid. Here are immediate tips 
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
 
     const basePrompt = GEMINI_PROMPTS.coping_hub.replace("[QUESTION]", question);
 
