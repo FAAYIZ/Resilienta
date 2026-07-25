@@ -1,6 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, Send, Keyboard, MessageSquare, AlertCircle } from 'lucide-react';
+import { Mic, MicOff, Keyboard, MessageSquare, AlertCircle, Send } from 'lucide-react';
 
+/**
+ * @component VoiceInput
+ * @description Capture user context using the native Web Speech API. Supports
+ * real-time transcript visualization, mic access checks, and falls back to a keyboard input textarea.
+ * 
+ * @param {Object} props
+ * @param {Function} props.onSubmit - Trigger handler when transcript or typed details are submitted
+ * @param {string} props.placeholder - Text input placeholder cue
+ * @param {boolean} props.isGenerating - Loading flag indicating Gemini processing active
+ * @returns {React.JSX.Element} The rendered VoiceInput component
+ */
 export default function VoiceInput({ onSubmit, placeholder, isGenerating }) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -58,7 +69,6 @@ export default function VoiceInput({ onSubmit, placeholder, isGenerating }) {
       }
 
       setTranscript((prev) => {
-        // Concatenate if it's new final content
         if (finalTranscript) {
           return finalTranscript;
         }
@@ -179,6 +189,7 @@ export default function VoiceInput({ onSubmit, placeholder, isGenerating }) {
               <textarea
                 id="voice-transcript"
                 rows={3}
+                aria-live="polite"
                 className="w-full bg-brand-darker border border-brand-border rounded-xl px-4 py-3 text-brand-text placeholder-brand-muted focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none text-sm transition-all focus:outline-none"
                 placeholder={placeholder || "Say: 'I am feeling overwhelmed' or 'I need help refusing a drink'..."}
                 value={transcript}

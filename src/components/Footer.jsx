@@ -2,6 +2,13 @@ import React from 'react';
 import { Phone, ShieldAlert, Heart, Eye } from 'lucide-react';
 import { HELPLINES } from '../utils/constants';
 
+/**
+ * @component Footer
+ * @description Application footer providing direct 1-tap call triggers for SAMHSA, SAMHSA text,
+ * and 988 lines, along with standard clinical disclaimers and data privacy notices.
+ * 
+ * @returns {React.JSX.Element} The rendered Footer component
+ */
 export default function Footer() {
   return (
     <footer className="bg-brand-darker border-t border-brand-border text-brand-muted py-8 px-4 sm:px-6 lg:px-8">
@@ -14,9 +21,9 @@ export default function Footer() {
             <span>24/7 Professional Crisis Support Hotlines</span>
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {HELPLINES.map((line, idx) => (
+            {HELPLINES.map((line) => (
               <a
-                key={`line-${idx}`}
+                key={line.name}
                 href={line.href}
                 className="flex items-start space-x-3.5 p-4 rounded-xl bg-brand-card hover:bg-slate-800 border border-brand-border hover:border-red-500/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 group"
                 aria-label={`Call ${line.name} at number ${line.number}`}
@@ -65,7 +72,7 @@ export default function Footer() {
         {/* Copyright branding */}
         <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-brand-border/60 text-[10px] text-slate-500">
           <span className="flex items-center space-x-1">
-            <span>Powered by Gemini 1.5 Flash</span>
+            <span>Powered by Gemini 2.0 Flash Lite</span>
             <Heart className="h-3 w-3 text-indigo-500" />
           </span>
           <span>© {new Date().getFullYear()} Resilienta. Designed for recovery and prevention.</span>

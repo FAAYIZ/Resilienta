@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Volume2, VolumeX, Copy, Check, ShieldAlert, Sparkles, RefreshCw } from 'lucide-react';
 
+/**
+ * @component EmergencyScripts
+ * @description Formats and displays the generated Gemini crisis scripts.
+ * Offers built-in Text-to-Speech (TTS) narration via SpeechSynthesis API,
+ * copy shortcut utility, and a clean local Markdown parser for structural headers, bullets, and alert cards.
+ * 
+ * @param {Object} props
+ * @param {string} props.script - The markdown-styled support script text
+ * @param {string} props.type - The script context type ('sos', 'de_escalation', 'refusal')
+ * @param {Function} props.onRegenerate - Handler to retry generation
+ * @param {boolean} props.isGenerating - Indicator flag if generation is currently running
+ * @returns {React.JSX.Element} The rendered EmergencyScripts component
+ */
 export default function EmergencyScripts({ script, type, onRegenerate, isGenerating }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    // Stop speaking when script changes
+    // Stop speaking when script changes or component unmounts
     return () => {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
@@ -57,12 +70,13 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
     }
   };
 
-  // Safe manual markdown parser for rendering formatted text without external HTML injection issues
+  /**
+   * Safe local markdown parser to render formatted segments without injecting arbitrary raw HTML.
+   */
   const renderFormattedScript = (text) => {
     if (!text) return null;
 
     const lines = text.split('\n');
-    let insideList = false;
     const elements = [];
 
     lines.forEach((line, index) => {
@@ -71,7 +85,7 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
       // Check for alert banners
       if (trimmed.startsWith('> [!NOTE]') || trimmed.startsWith('> [!IMPORTANT]')) {
         elements.push(
-          <div key={`alert-${index}`} className="p-3 my-3 bg-indigo-500/10 border-l-4 border-indigo-500 rounded text-xs text-indigo-300">
+          <div key={`alert-${type}-${index}`} className="p-3 my-3 bg-indigo-500/10 border-l-4 border-indigo-500 rounded text-xs text-indigo-300">
             <strong>System Protocol Enabled:</strong> Curated emergency guidelines are active.
           </div>
         );
@@ -79,10 +93,9 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
       }
       
       if (trimmed.startsWith('>')) {
-        // Strip the > and parse the inner text
         const quoteText = trimmed.replace(/^>\s*/, '');
         elements.push(
-          <blockquote key={`quote-${index}`} className="border-l-4 border-slate-600 pl-4 py-1 my-3 text-brand-muted italic text-sm">
+          <blockquote key={`quote-${type}-${index}`} className="border-l-4 border-slate-600 pl-4 py-1 my-3 text-brand-muted italic text-sm">
             {parseInlineStyles(quoteText)}
           </blockquote>
         );
@@ -92,7 +105,7 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
       // Check for headers
       if (trimmed.startsWith('###')) {
         elements.push(
-          <h4 key={`h3-${index}`} className="text-base font-bold text-indigo-400 mt-4 mb-2">
+          <h4 key={`h3-${type}-${index}`} className="text-base font-bold text-indigo-400 mt-4 mb-2">
             {parseInlineStyles(trimmed.replace(/^###\s*/, ''))}
           </h4>
         );
@@ -100,7 +113,7 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
       }
       if (trimmed.startsWith('##')) {
         elements.push(
-          <h3 key={`h2-${index}`} className="text-lg font-extrabold text-brand-text mt-5 mb-3 border-b border-brand-border pb-1">
+          <h3 key={`h2-${type}-${index}`} className="text-lg font-extrabold text-brand-text mt-5 mb-3 border-b border-brand-border pb-1">
             {parseInlineStyles(trimmed.replace(/^##\s*/, ''))}
           </h3>
         );
@@ -108,7 +121,7 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
       }
       if (trimmed.startsWith('#')) {
         elements.push(
-          <h2 key={`h1-${index}`} className="text-xl font-black text-brand-text mt-6 mb-4">
+          <h2 key={`h1-${type}-${index}`} className="text-xl font-black text-brand-text mt-6 mb-4">
             {parseInlineStyles(trimmed.replace(/^#\s*/, ''))}
           </h2>
         );
@@ -119,7 +132,7 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
       if (trimmed.startsWith('*') || trimmed.startsWith('-')) {
         const itemText = trimmed.replace(/^[\*\-]\s*/, '');
         elements.push(
-          <li key={`li-${index}`} className="list-disc ml-5 my-1 text-sm text-brand-text leading-relaxed">
+          <li key={`li-${type}-${index}`} className="list-disc ml-5 my-1 text-sm text-brand-text leading-relaxed">
             {parseInlineStyles(itemText)}
           </li>
         );
@@ -130,7 +143,7 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
       const numberMatch = trimmed.match(/^(\d+)\.\s+(.*)/);
       if (numberMatch) {
         elements.push(
-          <li key={`num-${index}`} className="list-decimal ml-5 my-1 text-sm text-brand-text leading-relaxed">
+          <li key={`num-${type}-${index}`} className="list-decimal ml-5 my-1 text-sm text-brand-text leading-relaxed">
             {parseInlineStyles(numberMatch[2])}
           </li>
         );
@@ -140,7 +153,7 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
       // Plain paragraphs
       if (trimmed !== '') {
         elements.push(
-          <p key={`p-${index}`} className="text-sm text-brand-text leading-relaxed my-2">
+          <p key={`p-${type}-${index}`} className="text-sm text-brand-text leading-relaxed my-2">
             {parseInlineStyles(trimmed)}
           </p>
         );
@@ -150,23 +163,21 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
     return <div className="space-y-1">{elements}</div>;
   };
 
-  // Helper to parse bold (**text**) and italics (*text*) within lines
+  /**
+   * Helper to parse bold (**text**) within lines
+   */
   const parseInlineStyles = (lineText) => {
     const parts = [];
     let currentIdx = 0;
-    
-    // Bold regex: **word**
     const boldRegex = /\*\*(.*?)\*\*/g;
     let match;
 
     while ((match = boldRegex.exec(lineText)) !== null) {
       const matchIdx = match.index;
-      // Add text before match
       if (matchIdx > currentIdx) {
         parts.push(lineText.substring(currentIdx, matchIdx));
       }
-      // Add bold text
-      parts.push(<strong key={`bold-${matchIdx}`} className="text-white font-semibold">{match[1]}</strong>);
+      parts.push(<strong key={`bold-${type}-${matchIdx}`} className="text-white font-semibold">{match[1]}</strong>);
       currentIdx = boldRegex.lastIndex;
     }
 

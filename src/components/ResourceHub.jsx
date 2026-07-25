@@ -3,6 +3,13 @@ import { HelpCircle, Send, Sparkles, AlertCircle, RefreshCw, BookOpen } from 'lu
 import { PRESET_COPING_QUESTIONS } from '../utils/constants';
 import { askCopingQuestion } from '../services/geminiService';
 
+/**
+ * @component ResourceHub
+ * @description Educational support space for caregivers. Offers quick-trigger cards
+ * on boundaries and triggers, and a search input prompting direct Gemini Q&A coping advice.
+ * 
+ * @returns {React.JSX.Element} The rendered ResourceHub component
+ */
 export default function ResourceHub() {
   const [query, setQuery] = useState('');
   const [answer, setAnswer] = useState('');
@@ -36,7 +43,9 @@ export default function ResourceHub() {
     }
   };
 
-  // Safe manual markdown parser for rendering formatted text without external HTML injection issues
+  /**
+   * Safe local markdown parser to render formatted coping guide details.
+   */
   const renderFormattedAnswer = (text) => {
     if (!text) return null;
 
@@ -49,7 +58,7 @@ export default function ResourceHub() {
       // Check for alert banners
       if (trimmed.startsWith('> [!NOTE]') || trimmed.startsWith('> [!IMPORTANT]')) {
         elements.push(
-          <div key={`alert-${index}`} className="p-3 my-3 bg-indigo-500/10 border-l-4 border-indigo-500 rounded text-xs text-indigo-300">
+          <div key={`hub-alert-${index}`} className="p-3 my-3 bg-indigo-500/10 border-l-4 border-indigo-500 rounded text-xs text-indigo-300">
             <strong>Guideline:</strong> Standard boundary-setting guidelines are active.
           </div>
         );
@@ -59,7 +68,7 @@ export default function ResourceHub() {
       if (trimmed.startsWith('>')) {
         const quoteText = trimmed.replace(/^>\s*/, '');
         elements.push(
-          <blockquote key={`quote-${index}`} className="border-l-4 border-slate-600 pl-4 py-1 my-3 text-brand-muted italic text-sm">
+          <blockquote key={`hub-quote-${index}`} className="border-l-4 border-slate-600 pl-4 py-1 my-3 text-brand-muted italic text-sm">
             {parseInlineStyles(quoteText)}
           </blockquote>
         );
@@ -68,7 +77,7 @@ export default function ResourceHub() {
 
       if (trimmed.startsWith('###')) {
         elements.push(
-          <h4 key={`h3-${index}`} className="text-base font-bold text-indigo-400 mt-4 mb-2">
+          <h4 key={`hub-h3-${index}`} className="text-base font-bold text-indigo-400 mt-4 mb-2">
             {parseInlineStyles(trimmed.replace(/^###\s*/, ''))}
           </h4>
         );
@@ -76,7 +85,7 @@ export default function ResourceHub() {
       }
       if (trimmed.startsWith('##')) {
         elements.push(
-          <h3 key={`h2-${index}`} className="text-lg font-extrabold text-brand-text mt-5 mb-3 border-b border-brand-border pb-1">
+          <h3 key={`hub-h2-${index}`} className="text-lg font-extrabold text-brand-text mt-5 mb-3 border-b border-brand-border pb-1">
             {parseInlineStyles(trimmed.replace(/^##\s*/, ''))}
           </h3>
         );
@@ -84,7 +93,7 @@ export default function ResourceHub() {
       }
       if (trimmed.startsWith('#')) {
         elements.push(
-          <h2 key={`h1-${index}`} className="text-xl font-black text-brand-text mt-6 mb-4">
+          <h2 key={`hub-h1-${index}`} className="text-xl font-black text-brand-text mt-6 mb-4">
             {parseInlineStyles(trimmed.replace(/^#\s*/, ''))}
           </h2>
         );
@@ -94,7 +103,7 @@ export default function ResourceHub() {
       if (trimmed.startsWith('*') || trimmed.startsWith('-')) {
         const itemText = trimmed.replace(/^[\*\-]\s*/, '');
         elements.push(
-          <li key={`li-${index}`} className="list-disc ml-5 my-1 text-sm text-brand-text leading-relaxed">
+          <li key={`hub-li-${index}`} className="list-disc ml-5 my-1 text-sm text-brand-text leading-relaxed">
             {parseInlineStyles(itemText)}
           </li>
         );
@@ -104,7 +113,7 @@ export default function ResourceHub() {
       const numberMatch = trimmed.match(/^(\d+)\.\s+(.*)/);
       if (numberMatch) {
         elements.push(
-          <li key={`num-${index}`} className="list-decimal ml-5 my-1 text-sm text-brand-text leading-relaxed">
+          <li key={`hub-num-${index}`} className="list-decimal ml-5 my-1 text-sm text-brand-text leading-relaxed">
             {parseInlineStyles(numberMatch[2])}
           </li>
         );
@@ -113,7 +122,7 @@ export default function ResourceHub() {
 
       if (trimmed !== '') {
         elements.push(
-          <p key={`p-${index}`} className="text-sm text-brand-text leading-relaxed my-2">
+          <p key={`hub-p-${index}`} className="text-sm text-brand-text leading-relaxed my-2">
             {parseInlineStyles(trimmed)}
           </p>
         );
@@ -123,10 +132,12 @@ export default function ResourceHub() {
     return <div className="space-y-1">{elements}</div>;
   };
 
+  /**
+   * Helper to parse bold syntax formatting inside text streams
+   */
   const parseInlineStyles = (lineText) => {
     const parts = [];
     let currentIdx = 0;
-    
     const boldRegex = /\*\*(.*?)\*\*/g;
     let match;
 
@@ -135,7 +146,7 @@ export default function ResourceHub() {
       if (matchIdx > currentIdx) {
         parts.push(lineText.substring(currentIdx, matchIdx));
       }
-      parts.push(<strong key={`bold-${matchIdx}`} className="text-white font-semibold">{match[1]}</strong>);
+      parts.push(<strong key={`hub-bold-${matchIdx}`} className="text-white font-semibold">{match[1]}</strong>);
       currentIdx = boldRegex.lastIndex;
     }
 

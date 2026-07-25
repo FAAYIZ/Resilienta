@@ -1,14 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import QuickActions from './components/QuickActions';
 import VoiceInput from './components/VoiceInput';
-import EmergencyScripts from './components/EmergencyScripts';
-import GroundingTool from './components/GroundingTool';
-import ResourceHub from './components/ResourceHub';
 import Footer from './components/Footer';
 import { generateEmergencyScript } from './services/geminiService';
 import { Sparkles, MessageSquare, AlertCircle, Heart } from 'lucide-react';
 
+// Lazy loading sub-components for optimized chunk loading
+const EmergencyScripts = lazy(() => import('./components/EmergencyScripts'));
+const GroundingTool = lazy(() => import('./components/GroundingTool'));
+const ResourceHub = lazy(() => import('./components/ResourceHub'));
+
+/**
+ * Loading fallback component for lazy-loaded sections.
+ * 
+ * @returns {React.JSX.Element} High-contrast animated spinner
+ */
+const LoadingSpinner = () => (
+  <div className="flex flex-col items-center justify-center p-12 space-y-4" role="status" aria-label="Loading section">
+    <span className="h-8 w-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    <p className="text-xs font-semibold text-indigo-400 tracking-wide animate-pulse">
+      Loading workspace...
+    </p>
+  </div>
+);
+
+/**
+ * @component App
+ * @description Main application controller and state manager for Resilienta.
+ * Coordinates roles (Individual/Caregiver), active panels, Gemini script calls, and main layout structure.
+ * 
+ * @returns {React.JSX.Element} The rendered React Application structure
+ */
 export default function App() {
   const [role, setRole] = useState('individual'); // 'individual' or 'caregiver'
   const [activeTab, setActiveTab] = useState('sos'); // 'sos', 'grounding', 'hub'
@@ -19,8 +42,28 @@ export default function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [lastVoiceContext, setLastVoiceContext] = useState('');
 
-  // Handle click on quick action chips
-  const handleActionSelect = async (actionId) => {
+  /**
+   * Helper to execute Gemini generation service and update script state.
+   * Wrapped in useCallback to prevent child components from unnecessary re-renders.
+   */
+  const runScriptGeneration = useCallback(async (type, context) => {
+    setIsGenerating(true);
+    setScript(''); // Clear previous script
+    try {
+      const result = await generateEmergencyScript(type, context);
+      setScript(result);
+    } catch (err) {
+      console.error("Failed to generate script:", err);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, []);
+
+  /**
+   * Triggers when user selects a 1-tap quick action chip.
+   * Wrapped in useCallback to prevent child components from unnecessary re-renders.
+   */
+  const handleActionSelect = useCallback(async (actionId) => {
     if (actionId === 'grounding') {
       setActiveTab('grounding');
       return;
@@ -32,28 +75,20 @@ export default function App() {
     
     // Trigger immediate initial script generation using standard prompts
     await runScriptGeneration(actionId, '');
-  };
+  }, [runScriptGeneration]);
 
-  // Helper to call script service
-  const runScriptGeneration = async (type, context) => {
-    setIsGenerating(true);
-    setScript(''); // Clear previous script
-    try {
-      const result = await generateEmergencyScript(type, context);
-      setScript(result);
-    } catch (err) {
-      console.error("Failed to generate script:", err);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  // Callback when voice/keyboard input is submitted
-  const handleInputSubmit = async (transcript) => {
+  /**
+   * Callback triggered when voice recording transcript or keyboard fallback is submitted.
+   * Wrapped in useCallback to prevent child components from unnecessary re-renders.
+   */
+  const handleInputSubmit = useCallback(async (transcript) => {
     setLastVoiceContext(transcript);
     await runScriptGeneration(scriptType, transcript);
-  };
+  }, [scriptType, runScriptGeneration]);
 
+  /**
+   * Dynamic placeholder getter for voice input depending on action type.
+   */
   const getVoiceInputPlaceholder = () => {
     switch (scriptType) {
       case 'de_escalation':
@@ -119,43 +154,45 @@ export default function App() {
           
           {/* Main workspace (takes 2 cols on wide screens) */}
           <div className="lg:col-span-2 space-y-6">
-            {activeTab === 'sos' && (
-              <div className="space-y-6">
-                
-                {/* Script Display */}
-                {(script || isGenerating) && (
-                  <EmergencyScripts 
-                    script={script} 
-                    type={scriptType} 
-                    isGenerating={isGenerating}
-                    onRegenerate={() => runScriptGeneration(scriptType, lastVoiceContext)}
-                  />
-                )}
+            <Suspense fallback={<LoadingSpinner />}>
+              {activeTab === 'sos' && (
+                <div className="space-y-6">
+                  
+                  {/* Script Display */}
+                  {(script || isGenerating) && (
+                    <EmergencyScripts 
+                      script={script} 
+                      type={scriptType} 
+                      isGenerating={isGenerating}
+                      onRegenerate={() => runScriptGeneration(scriptType, lastVoiceContext)}
+                    />
+                  )}
 
-                {/* Voice/Keyboard Refinement box */}
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-4.5 w-4.5 text-indigo-400" />
-                    <h3 className="text-sm font-bold text-brand-text">
-                      {script ? 'Refine Script with Extra Context' : 'Select a Quick Action above, or describe your state below'}
-                    </h3>
+                  {/* Voice/Keyboard Refinement box */}
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <MessageSquare className="h-4.5 w-4.5 text-indigo-400" />
+                      <h3 className="text-sm font-bold text-brand-text">
+                        {script ? 'Refine Script with Extra Context' : 'Select a Quick Action above, or describe your state below'}
+                      </h3>
+                    </div>
+                    <VoiceInput 
+                      onSubmit={handleInputSubmit} 
+                      placeholder={getVoiceInputPlaceholder()}
+                      isGenerating={isGenerating}
+                    />
                   </div>
-                  <VoiceInput 
-                    onSubmit={handleInputSubmit} 
-                    placeholder={getVoiceInputPlaceholder()}
-                    isGenerating={isGenerating}
-                  />
                 </div>
-              </div>
-            )}
+              )}
 
-            {activeTab === 'grounding' && (
-              <GroundingTool />
-            )}
+              {activeTab === 'grounding' && (
+                <GroundingTool />
+              )}
 
-            {activeTab === 'hub' && (
-              <ResourceHub />
-            )}
+              {activeTab === 'hub' && (
+                <ResourceHub />
+              )}
+            </Suspense>
           </div>
 
           {/* Quick-Help sidebar (takes 1 col) */}

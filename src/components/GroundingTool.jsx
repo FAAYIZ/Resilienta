@@ -2,6 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Eye, Hand, Volume2, Wind, Sparkles, ChevronLeft, ChevronRight, Play, Square, RotateCcw, Check } from 'lucide-react';
 import { GROUNDING_STEPS } from '../utils/constants';
 
+/**
+ * @component GroundingTool
+ * @description Coordinates physical anxiety relief tools:
+ * 1. 4-7-8 Breathing circle with interactive scaling animations and timing prompts.
+ * 2. 5-4-3-2-1 Sensory Grounding Wizard offering step-by-step checklists to redirect cognitive strain.
+ * 
+ * @returns {React.JSX.Element} The rendered GroundingTool component
+ */
 export default function GroundingTool() {
   const [activeSubTab, setActiveSubTab] = useState('breathing'); // 'breathing' or 'sensory'
   

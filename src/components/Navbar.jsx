@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import { Heart, Activity, ShieldAlert, Users, Menu, X, PhoneCall } from 'lucide-react';
 
+/**
+ * @component Navbar
+ * @description Renders the application global header. Features high-contrast tab controls,
+ * a state-linked user role toggle switch, and a direct dial shortcut for the 988 emergency hotline.
+ * 
+ * @param {Object} props
+ * @param {string} props.currentRole - Active user perspective ('individual' or 'caregiver')
+ * @param {Function} props.setRole - Setter handler to adjust active perspective
+ * @param {string} props.activeTab - Currently loaded page/panel identifier
+ * @param {Function} props.setActiveTab - Navigation handler to switch panels
+ * @returns {React.JSX.Element} The rendered Navbar component
+ */
 export default function Navbar({ currentRole, setRole, activeTab, setActiveTab }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

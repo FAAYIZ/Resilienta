@@ -39,15 +39,19 @@ describe('Resilienta App - Component Mounting & Integration Tests', () => {
     const groundingTab = screen.getByText('Grounding & Calm');
     fireEvent.click(groundingTab);
     
-    // Grounding tab shows breathing guide
-    expect(screen.getByText('4-7-8 Calming Breath')).toBeInTheDocument();
+    // Grounding tab shows breathing guide (use waitFor to accommodate React.lazy)
+    await waitFor(() => {
+      expect(screen.getByText('4-7-8 Calming Breath')).toBeInTheDocument();
+    });
     
     // Click Coping tab
     const copingTab = screen.getByText('Coping Resource Hub');
     fireEvent.click(copingTab);
     
-    // Coping tab shows preset topics
-    expect(screen.getByText('Preset Help Topics')).toBeInTheDocument();
+    // Coping tab shows preset topics (use waitFor to accommodate React.lazy)
+    await waitFor(() => {
+      expect(screen.getByText('Preset Help Topics')).toBeInTheDocument();
+    });
   });
 
   it('updates environment role when toggling role switch', () => {
@@ -71,7 +75,7 @@ describe('Resilienta App - Component Mounting & Integration Tests', () => {
     const cravingChip = screen.getByLabelText(/Activate Active Craving SOS/i);
     fireEvent.click(cravingChip);
     
-    // Check if script panel is loading or renders
+    // Check if script panel is loading or renders (use waitFor to accommodate React.lazy)
     await waitFor(() => {
       expect(screen.getByText('Emergency Craving Rescue Script')).toBeInTheDocument();
     });

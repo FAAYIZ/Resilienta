@@ -1,6 +1,16 @@
 import React from 'react';
 import { Flame, Users, Sparkles, Smile } from 'lucide-react';
 
+/**
+ * @component QuickActions
+ * @description Renders a grid of 4 high-contrast emergency quick action chips.
+ * Order is dynamically adjusted to highlight the recommended action depending on the active user role.
+ * 
+ * @param {Object} props
+ * @param {Function} props.onActionSelect - Callback handler when action chip is activated
+ * @param {string} props.currentRole - Perspective context ('individual' or 'caregiver')
+ * @returns {React.JSX.Element} The rendered QuickActions component
+ */
 export default function QuickActions({ onActionSelect, currentRole }) {
   const actions = [
     {
