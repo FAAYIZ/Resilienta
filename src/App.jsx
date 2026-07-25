@@ -1,0 +1,207 @@
+import React, { useState } from 'react';
+import Navbar from './components/Navbar';
+import QuickActions from './components/QuickActions';
+import VoiceInput from './components/VoiceInput';
+import EmergencyScripts from './components/EmergencyScripts';
+import GroundingTool from './components/GroundingTool';
+import ResourceHub from './components/ResourceHub';
+import Footer from './components/Footer';
+import { generateEmergencyScript } from './services/geminiService';
+import { Sparkles, MessageSquare, AlertCircle, Heart } from 'lucide-react';
+
+export default function App() {
+  const [role, setRole] = useState('individual'); // 'individual' or 'caregiver'
+  const [activeTab, setActiveTab] = useState('sos'); // 'sos', 'grounding', 'hub'
+  
+  // Script generation states
+  const [script, setScript] = useState('');
+  const [scriptType, setScriptType] = useState('sos'); // 'sos', 'de_escalation', 'refusal'
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [lastVoiceContext, setLastVoiceContext] = useState('');
+
+  // Handle click on quick action chips
+  const handleActionSelect = async (actionId) => {
+    if (actionId === 'grounding') {
+      setActiveTab('grounding');
+      return;
+    }
+
+    setActiveTab('sos');
+    setScriptType(actionId);
+    setLastVoiceContext('');
+    
+    // Trigger immediate initial script generation using standard prompts
+    await runScriptGeneration(actionId, '');
+  };
+
+  // Helper to call script service
+  const runScriptGeneration = async (type, context) => {
+    setIsGenerating(true);
+    setScript(''); // Clear previous script
+    try {
+      const result = await generateEmergencyScript(type, context);
+      setScript(result);
+    } catch (err) {
+      console.error("Failed to generate script:", err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Callback when voice/keyboard input is submitted
+  const handleInputSubmit = async (transcript) => {
+    setLastVoiceContext(transcript);
+    await runScriptGeneration(scriptType, transcript);
+  };
+
+  const getVoiceInputPlaceholder = () => {
+    switch (scriptType) {
+      case 'de_escalation':
+        return "Say: 'My loved one is yelling and refusing to put down a package' or similar context...";
+      case 'refusal':
+        return "Say: 'I am going to a birthday party where there will be peer pressure to drink alcohol'...";
+      default:
+        return "Say: 'I am sitting alone, my chest is tight, and I really want to call someone'...";
+    }
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen bg-brand-darker">
+      <Navbar 
+        currentRole={role} 
+        setRole={setRole} 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+      />
+
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+        {/* Dynamic Welcoming Header Banner */}
+        <section className="bg-gradient-to-r from-slate-900 via-indigo-950/20 to-slate-900 border border-brand-border rounded-3xl p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
+          <div className="space-y-2 z-10">
+            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Resilienta Support Engine Active</span>
+            </span>
+            <h1 className="text-2xl md:text-3xl font-black text-brand-text leading-tight tracking-tight">
+              {role === 'individual' 
+                ? 'Your Recovery & Crisis Prevention Companion' 
+                : 'Compassionate Caregiver Support Platform'
+              }
+            </h1>
+            <p className="text-sm text-brand-muted max-w-2xl leading-relaxed">
+              {role === 'individual'
+                ? 'Access automated zero-typing calming tools, emergency response prompts, and physical grounding exercises designed for high cognitive stress.'
+                : 'Empower yourself with de-escalation guidelines, boundaries education, and instant copings scripts to help your loved one navigate recovery.'
+              }
+            </p>
+          </div>
+
+          <div className="bg-slate-900 border border-brand-border px-5 py-4 rounded-2xl flex-shrink-0 flex items-center space-x-3.5 md:max-w-xs shadow-lg">
+            <div className="bg-indigo-500/15 p-2 rounded-xl text-indigo-400">
+              <Heart className="h-5 w-5 animate-pulse" />
+            </div>
+            <div className="space-y-0.5">
+              <span className="block text-xs font-bold text-brand-text">Active Assistance Mode:</span>
+              <span className="block text-sm font-black text-indigo-400 uppercase tracking-wide">
+                {role === 'individual' ? 'SUD Individual' : 'SUD Caregiver'}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* 1-Tap Emergency Quick Actions */}
+        <section aria-label="Quick Action Controls">
+          <QuickActions onActionSelect={handleActionSelect} currentRole={role} />
+        </section>
+
+        {/* Tab panels and interactive tools */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Main workspace (takes 2 cols on wide screens) */}
+          <div className="lg:col-span-2 space-y-6">
+            {activeTab === 'sos' && (
+              <div className="space-y-6">
+                
+                {/* Script Display */}
+                {(script || isGenerating) && (
+                  <EmergencyScripts 
+                    script={script} 
+                    type={scriptType} 
+                    isGenerating={isGenerating}
+                    onRegenerate={() => runScriptGeneration(scriptType, lastVoiceContext)}
+                  />
+                )}
+
+                {/* Voice/Keyboard Refinement box */}
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <MessageSquare className="h-4.5 w-4.5 text-indigo-400" />
+                    <h3 className="text-sm font-bold text-brand-text">
+                      {script ? 'Refine Script with Extra Context' : 'Select a Quick Action above, or describe your state below'}
+                    </h3>
+                  </div>
+                  <VoiceInput 
+                    onSubmit={handleInputSubmit} 
+                    placeholder={getVoiceInputPlaceholder()}
+                    isGenerating={isGenerating}
+                  />
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'grounding' && (
+              <GroundingTool />
+            )}
+
+            {activeTab === 'hub' && (
+              <ResourceHub />
+            )}
+          </div>
+
+          {/* Quick-Help sidebar (takes 1 col) */}
+          <aside className="space-y-6 flex flex-col h-fit">
+            
+            {/* Quick Grounding breathing promo */}
+            <div className="p-6 bg-gradient-to-br from-indigo-950/20 to-brand-card rounded-2xl border border-brand-border space-y-4 shadow-lg">
+              <h4 className="font-bold text-sm text-brand-text flex items-center space-x-2">
+                <span>Immediate Grounding Tips</span>
+              </h4>
+              <ul className="text-xs text-brand-muted space-y-2.5 list-disc pl-4 leading-relaxed">
+                <li>
+                  <strong className="text-indigo-300">Drop your shoulders:</strong> Release the physical tension in your neck.
+                </li>
+                <li>
+                  <strong className="text-indigo-300">Cold water shock:</strong> Wash your face with cold water to trigger the mammalian dive reflex and drop heart rate.
+                </li>
+                <li>
+                  <strong className="text-indigo-300">The 4-7-8 rhythm:</strong> Head over to the <button onClick={() => setActiveTab('grounding')} className="text-indigo-400 font-bold hover:underline">Grounding Tab</button> to breathe alongside our pacing guides.
+                </li>
+              </ul>
+            </div>
+
+            {/* Quick Hotline disclaimer warning */}
+            <div className="p-6 bg-red-950/10 border border-red-500/20 rounded-2xl space-y-3 shadow-lg">
+              <div className="flex items-center space-x-2 text-red-400">
+                <AlertCircle className="h-4 w-4" />
+                <h4 className="font-bold text-xs uppercase tracking-wider">Urgent Assistance</h4>
+              </div>
+              <p className="text-xs text-brand-muted leading-relaxed">
+                If you are in immediate danger of using substances, harming yourself, or if you feel completely unsafe, please utilize the 24/7 hotline links in the footer below. You do not have to struggle alone.
+              </p>
+              <a
+                href="tel:988"
+                className="inline-flex items-center justify-center w-full bg-red-600 hover:bg-red-500 text-white font-bold text-xs py-2 px-4 rounded-xl transition duration-150 shadow-md shadow-red-600/10"
+              >
+                Dial 988 Lifeline Now
+              </a>
+            </div>
+
+          </aside>
+
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
