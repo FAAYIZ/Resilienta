@@ -30,7 +30,7 @@ export const GROUNDING_STEPS = [
     description: "Look around you. Name 5 things you can see in your immediate environment (e.g., a clock, a chair, a plant, a shadow, a cup). Take your time.",
     color: "from-blue-500/20 to-blue-600/10",
     icon: "Eye",
-    ariaLabel: "Grounding step five: identify five things you can see."
+    ariaLabel: "Grounding step 5: identify 5 things you see."
   },
   {
     step: 4,
@@ -38,7 +38,7 @@ export const GROUNDING_STEPS = [
     description: "Pay attention to your body. Name 4 things you can physically feel (e.g., the texture of your shirt, the hard floor under your feet, the breeze on your face, the back of your chair).",
     color: "from-indigo-500/20 to-indigo-600/10",
     icon: "Touchpad",
-    ariaLabel: "Grounding step four: identify four things you can feel."
+    ariaLabel: "Grounding step 4: identify 4 things you feel."
   },
   {
     step: 3,
@@ -46,7 +46,7 @@ export const GROUNDING_STEPS = [
     description: "Listen closely. Name 3 things you can hear in the background (e.g., traffic hum, bird chirps, ticking clock, refrigerator running, typing sound).",
     color: "from-violet-500/20 to-violet-600/10",
     icon: "Volume2",
-    ariaLabel: "Grounding step three: identify three things you can hear."
+    ariaLabel: "Grounding step 3: identify 3 things you hear."
   },
   {
     step: 2,
@@ -54,7 +54,7 @@ export const GROUNDING_STEPS = [
     description: "Breathe in. Name 2 things you can smell right now (e.g., coffee brewing, soap, cut grass, perfume, the pages of a book, or even just fresh air).",
     color: "from-purple-500/20 to-purple-600/10",
     icon: "Wind",
-    ariaLabel: "Grounding step two: identify two things you can smell."
+    ariaLabel: "Grounding step 2: identify 2 things you smell."
   },
   {
     step: 1,
@@ -62,7 +62,7 @@ export const GROUNDING_STEPS = [
     description: "Focus on your mouth. Name 1 thing you can taste (e.g., the mint toothpaste from this morning, a sip of water, or simply the neutral state of your tongue).",
     color: "from-rose-500/20 to-rose-600/10",
     icon: "Sparkles",
-    ariaLabel: "Grounding step one: identify one thing you can taste."
+    ariaLabel: "Grounding step 1: identify 1 thing you taste."
   }
 ];
 
@@ -89,87 +89,56 @@ export const PRESET_COPING_QUESTIONS = [
   }
 ];
 
-// Fallback scripts in case the Gemini API key is missing or calls fail.
+// Fallback scripts using shortened, incident-focused phrasing with colon separators
 export const FALLBACK_SCRIPTS = {
-  sos: `**[FALLBACK SYSTEM NOTIFICATION]**
-We've loaded a pre-verified emergency craving mitigation protocol for you.
+  sos: `1. **Change Location**: Move to a different room or step outside immediately to alter your brain state.
+2. **⏱️ 15-Minute Wave**: Cravings peak and pass in 15 minutes. Stand firm.
+3. **Cold Water**: Drink a large glass of ice-cold water to shock your senses and interrupt obsessive thoughts.
+4. **Reach Out**: Call or text your support contact. Let them know you need a 5-minute distraction.
+5. **Start Grounding**: Use the 5-4-3-2-1 tool or the breathing guide below to calm your nervous system.`,
 
-### Action Plan: Active Craving SOS
+  de_escalation: `1. **Lower Pitch**: Speak slowly, softly, and keep your voice calm.
+2. **Validate Emotion**: Say: "I see you are overwhelmed, and I care about your safety."
+3. **Safe Space**: Give physical space and maintain a non-threatening posture.
+4. **Take Pause**: Suggest sitting down and having a glass of water together.`,
 
-1. **Change Your Location immediately**: If you are in a place where you used to use substances, stand up and walk to another room or go outside. Physical movement alters brain states.
-2. **The 15-Minute Rule**: Remind yourself that cravings are physiological spikes that peak and then dissipate, usually lasting 15 to 20 minutes. You do not have to fight the craving forever; you just need to wait out this wave.
-3. **Drink Water**: Sip a large glass of ice-cold water. The sensory change in your throat helps interrupt obsessive mental loops.
-4. **Reach Out**: Text or call one person on your support team right now. Just tell them: "I'm having a craving and I need to talk for five minutes to distract myself."
-5. **Start Grounding**: Use the 5-4-3-2-1 Grounding tool or the 4-7-8 Breathing Guide built into Resilienta below to calm your nervous system.`,
-
-  de_escalation: `**[FALLBACK SYSTEM NOTIFICATION]**
-We've loaded a pre-verified caregiver de-escalation protocol.
-
-### Action Plan: High-Tension De-escalation Script
-
-1. **Lower Your Vocal Pitch and Volume**: When a loved one is in high cognitive load or agitation, matching their volume escalates tension. Speak softly, slowly, and clearly.
-2. **De-escalation Script to Say Aloud**:
-   *"I can see that you're incredibly overwhelmed right now, and I want to support you. Let's take a breath together. I am not here to judge or argue. I am here because I care about your safety."*
-3. **Validate Emotion, Not Action**:
-   *"It makes complete sense that you are angry/scared/stressed. Recovery is incredibly hard. But we don't need to solve everything in this exact second."*
-4. **Keep Physical Boundaries Safe**: Give them physical space. Do not block exits. Maintain a non-threatening, open posture (arms uncrossed).
-5. **Suggest a Micro-Pause**:
-   *"Let's sit down and drink a glass of water. We can talk about this when things feel a little bit calmer."*`,
-
-  refusal: `**[FALLBACK SYSTEM NOTIFICATION]**
-We've loaded a pre-verified social refusal protocol.
-
-### Refusal Responses (Firm, Polite, and Non-Negotiable)
-
-*Use one of these scripts if you are offered a substance in a social environment:*
-
-*   **Option 1 (Direct & Simple):**
-    *"No, thanks. I'm not drinking/using tonight. I've got a busy day tomorrow."*
-*   **Option 2 (Health Focus):**
-    *"Actually, I'm taking a break for my health. I feel a lot better this way. Thanks, though!"*
-*   **Option 3 (Humor/Boundary):**
-    *"No, thanks. I've already retired from that! I'll stick to this soda."*
-*   **Option 4 (Change the Subject):**
-    *"I'm good, thank you. By the way, did you see the game last night? Who do you think will win the championship?"*
-
-**Refusal Strategy Tip**: Always keep a non-alcoholic beverage in your hand. People are far less likely to offer you a drink if you already have one.`
+  refusal: `1. **Direct No**: "No, thanks. I am not drinking/using tonight."
+2. **Break/Health**: "I am taking a break for my health. I feel much better."
+3. **Humor Option**: "I have already retired from that! I will stick to this soda."
+4. **Distract/Pivot**: "I am good, thank you. By the way, did you see the game?"`
 };
 
 export const GEMINI_PROMPTS = {
   sos: `You are an empathetic, clinical-grade AI crisis recovery coach supporting someone during an active substance craving (Substance Use Disorder - SUD).
 The user is experiencing high cognitive load and distress.
-Your task is to generate a step-by-step, highly calming, compassionate, and actionable coping script.
-Use short paragraphs, bullet points, and clean bold styling. Keep the tone warm, validating, and focused on physical and mental safety.
-Format the output as follows:
-- A warm validation statement (e.g. "I hear you, and it's okay to feel this way. You are safe right now.")
-- A set of 3 simple, low-effort physical steps (e.g. change posture, drink water, feel your feet).
-- A positive cognitive reframing sentence.
-- A reminder to use the breathing tool.
-Do NOT use overly complex words. Keep it simple and clear. Let's begin. User voice/input text: `,
+Generate a step-by-step, highly calming, compassionate, and actionable coping script.
+Format each step as a numbered item with a bold header, followed by a colon and a single sentence explanation.
+Example:
+1. **Change Location**: Move to a different room or step outside immediately.
+Do NOT use paragraph text. Keep it simple and clear. Let's begin. User voice/input text: `,
 
   de_escalation: `You are a professional crisis de-escalation expert specializing in family support and caregiver intervention for Substance Use Disorder (SUD).
 The user is a caregiver facing a high-tension, high-stress relapse threat or conflict with their loved one.
-Your task is to generate a highly actionable, step-by-step de-escalation script that the caregiver can read directly or use to guide their actions.
-Use a calm, structured, and strategic tone.
-Format the output as follows:
-- **Verbatim phrases to say aloud** (use quotes and make them gentle, non-confrontational, and loving).
-- **Physical de-escalation checklist** (body language, tone of voice, spacing).
-- **Emergency limit-setting** (how to state boundaries calmly).
-Keep it easy to read during moments of panic. User voice/input text: `,
+Generate a de-escalation script that the caregiver can read directly.
+Format each step as a numbered item with a bold header, followed by a colon and a single sentence explanation.
+Example:
+1. **Lower Pitch**: Speak slowly, softly, and keep your voice calm.
+Keep it easy to read. User voice/input text: `,
 
   refusal: `You are a supportive, practical recovery mentor helping an individual in recovery prepare for social pressure.
-Generate 3 distinct, confident, polite, and firm refusal scripts to turn down offers of alcohol or drugs at social events.
-The scripts should range from simple/direct to health-focused to humor/boundary.
-Provide a quick tip on body language for each script.
-Keep it extremely practical and empowering. User voice/input text: `,
+Generate 4 distinct, confident, polite, and firm refusal scripts to turn down offers of alcohol or drugs.
+Format each script as a numbered item with a bold header, followed by a colon and a single sentence explanation.
+Example:
+1. **Direct No**: "No, thanks. I am not drinking/using tonight."
+Keep it extremely practical. User voice/input text: `,
 
   coping_hub: `You are a clinical AI advisor specialized in Substance Use Disorder (SUD) education, boundary setting, and caregiver self-care.
 The caregiver has asked: [QUESTION].
 Provide a highly structured, empathetic, and comprehensive response.
 Include:
-1. **Understanding the Context**: Validate the caregiver's distress and explain the underlying behavioral dynamic.
-2. **Immediate Action Steps**: 3-4 bulleted steps they can take today.
-3. **Communication Phrases**: Verbatim examples of what they can say.
-4. **Self-Care Reminder**: A brief note on their own oxygen mask first.
+1. **Understanding Context**: Validate the caregiver's distress and explain the behavior.
+2. **Action Steps**: 3-4 bulleted steps they can take today.
+3. **Communication Phrases**: What they can say.
+4. **Self-Care Reminder**: A note on protecting their own health.
 Use clean formatting, headers, and bullet points. Avoid jargon. Provide practical, real-world advice.`
 };

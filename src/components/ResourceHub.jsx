@@ -100,22 +100,54 @@ export default function ResourceHub() {
         return;
       }
 
+      // Bullet lists -> Styled as cards
       if (trimmed.startsWith('*') || trimmed.startsWith('-')) {
         const itemText = trimmed.replace(/^[\*\-]\s*/, '');
+        const [cardHeader, ...bodyParts] = itemText.split(': ');
+        const cardBody = bodyParts.join(': ');
+
         elements.push(
-          <li key={`hub-li-${index}`} className="list-disc ml-5 my-1 text-sm text-brand-text leading-relaxed">
-            {parseInlineStyles(itemText)}
-          </li>
+          <div key={`hub-li-${index}`} className="bg-slate-800/60 border border-brand-border/40 p-4 rounded-xl shadow-md my-2.5 flex items-start space-x-3 hover:border-indigo-500/20 transition-all">
+            <span className="text-indigo-400 text-sm mt-0.5 flex-shrink-0">•</span>
+            <div>
+              {cardBody ? (
+                <>
+                  <span className="block text-sm font-bold text-white mb-0.5">{cardHeader.replace(/\*\*/g, '')}</span>
+                  <span className="block text-xs text-brand-muted leading-relaxed">{cardBody}</span>
+                </>
+              ) : (
+                <span className="block text-sm text-brand-text">{cardHeader}</span>
+              )}
+            </div>
+          </div>
         );
         return;
       }
 
+      // Numbered lists -> Styled as cards
       const numberMatch = trimmed.match(/^(\d+)\.\s+(.*)/);
       if (numberMatch) {
+        const stepNum = numberMatch[1];
+        const itemText = numberMatch[2];
+        const [cardHeader, ...bodyParts] = itemText.split(': ');
+        const cardBody = bodyParts.join(': ');
+
         elements.push(
-          <li key={`hub-num-${index}`} className="list-decimal ml-5 my-1 text-sm text-brand-text leading-relaxed">
-            {parseInlineStyles(numberMatch[2])}
-          </li>
+          <div key={`hub-num-${index}`} className="bg-slate-800/80 border border-brand-border/60 p-4 rounded-xl shadow-md my-3 flex items-start space-x-3.5 hover:border-indigo-500/30 transition-all duration-200">
+            <span className="bg-indigo-500/10 text-indigo-400 text-xs font-black rounded-lg w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5 border border-indigo-500/20">
+              {stepNum}
+            </span>
+            <div className="flex-1">
+              {cardBody ? (
+                <>
+                  <span className="block text-sm font-bold text-white mb-0.5">{cardHeader.replace(/\*\*/g, '')}</span>
+                  <span className="block text-xs text-brand-muted leading-relaxed">{cardBody}</span>
+                </>
+              ) : (
+                <span className="block text-sm text-brand-text leading-relaxed">{cardHeader}</span>
+              )}
+            </div>
+          </div>
         );
         return;
       }

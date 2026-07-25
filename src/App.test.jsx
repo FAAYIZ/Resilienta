@@ -58,14 +58,14 @@ describe('Resilienta App - Component Mounting & Integration Tests', () => {
     render(<App />);
     
     // Default environment is SUD Individual
-    expect(screen.getByText('Your Recovery & Crisis Prevention Companion')).toBeInTheDocument();
+    expect(screen.getByText('Resilienta Recovery Companion')).toBeInTheDocument();
     
     // Toggle role to Caregiver
     const toggleButton = screen.getByRole('switch', { name: /Switch between Navigating SUD/i });
     fireEvent.click(toggleButton);
     
     // Header should change to Caregiver Mode
-    expect(screen.getByText('Compassionate Caregiver Support Platform')).toBeInTheDocument();
+    expect(screen.getByText('Caregiver Support Hub')).toBeInTheDocument();
   });
 
   it('triggers emergency script generator when selecting a quick action chip', async () => {

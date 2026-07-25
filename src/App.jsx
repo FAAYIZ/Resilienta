@@ -119,14 +119,14 @@ export default function App() {
             </span>
             <h1 className="text-2xl md:text-3xl font-black text-brand-text leading-tight tracking-tight">
               {role === 'individual' 
-                ? 'Your Recovery & Crisis Prevention Companion' 
-                : 'Compassionate Caregiver Support Platform'
+                ? 'Resilienta Recovery Companion' 
+                : 'Caregiver Support Hub'
               }
             </h1>
-            <p className="text-sm text-brand-muted max-w-2xl leading-relaxed">
+            <p className="text-sm text-brand-muted max-w-2xl leading-relaxed font-medium">
               {role === 'individual'
-                ? 'Access automated zero-typing calming tools, emergency response prompts, and physical grounding exercises designed for high cognitive stress.'
-                : 'Empower yourself with de-escalation guidelines, boundaries education, and instant copings scripts to help your loved one navigate recovery.'
+                ? '1-Tap emergency tools, zero-typing prompts, and physical grounding exercises for immediate relief.'
+                : 'Immediate de-escalation scripts, boundary tools, and supportive guidance for families.'
               }
             </p>
           </div>

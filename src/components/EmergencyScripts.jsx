@@ -5,7 +5,7 @@ import { Volume2, VolumeX, Copy, Check, ShieldAlert, Sparkles, RefreshCw } from 
  * @component EmergencyScripts
  * @description Formats and displays the generated Gemini crisis scripts.
  * Offers built-in Text-to-Speech (TTS) narration via SpeechSynthesis API,
- * copy shortcut utility, and a clean local Markdown parser for structural headers, bullets, and alert cards.
+ * copy shortcut utility, and a clean local Markdown parser that turns action steps into visual cards.
  * 
  * @param {Object} props
  * @param {string} props.script - The markdown-styled support script text
@@ -71,7 +71,8 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
   };
 
   /**
-   * Safe local markdown parser to render formatted segments without injecting arbitrary raw HTML.
+   * Safe local markdown parser to render formatted segments.
+   * Numbered steps are parsed into high-contrast action cards.
    */
   const renderFormattedScript = (text) => {
     if (!text) return null;
@@ -128,24 +129,54 @@ export default function EmergencyScripts({ script, type, onRegenerate, isGenerat
         return;
       }
 
-      // Check for bullet lists
+      // Check for bullet lists -> Styled as visual action cards
       if (trimmed.startsWith('*') || trimmed.startsWith('-')) {
         const itemText = trimmed.replace(/^[\*\-]\s*/, '');
+        const [cardHeader, ...bodyParts] = itemText.split(': ');
+        const cardBody = bodyParts.join(': ');
+        
         elements.push(
-          <li key={`li-${type}-${index}`} className="list-disc ml-5 my-1 text-sm text-brand-text leading-relaxed">
-            {parseInlineStyles(itemText)}
-          </li>
+          <div key={`li-${type}-${index}`} className="bg-slate-800/60 border border-brand-border/40 p-4 rounded-xl shadow-md my-2.5 flex items-start space-x-3 hover:border-indigo-500/20 transition-all">
+            <span className="text-indigo-400 text-sm mt-0.5 flex-shrink-0">•</span>
+            <div>
+              {cardBody ? (
+                <>
+                  <span className="block text-sm font-bold text-white mb-0.5">{cardHeader.replace(/\*\*/g, '')}</span>
+                  <span className="block text-xs text-brand-muted leading-relaxed">{cardBody}</span>
+                </>
+              ) : (
+                <span className="block text-sm text-brand-text">{cardHeader}</span>
+              )}
+            </div>
+          </div>
         );
         return;
       }
 
-      // Numbered lists
+      // Numbered lists -> Styled as premium numbered visual cards
       const numberMatch = trimmed.match(/^(\d+)\.\s+(.*)/);
       if (numberMatch) {
+        const stepNum = numberMatch[1];
+        const itemText = numberMatch[2];
+        const [cardHeader, ...bodyParts] = itemText.split(': ');
+        const cardBody = bodyParts.join(': ');
+
         elements.push(
-          <li key={`num-${type}-${index}`} className="list-decimal ml-5 my-1 text-sm text-brand-text leading-relaxed">
-            {parseInlineStyles(numberMatch[2])}
-          </li>
+          <div key={`num-${type}-${index}`} className="bg-slate-800/80 border border-brand-border/60 p-4 rounded-xl shadow-md my-3 flex items-start space-x-3.5 hover:border-indigo-500/30 transition-all duration-200">
+            <span className="bg-indigo-500/10 text-indigo-400 text-xs font-black rounded-lg w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5 border border-indigo-500/20">
+              {stepNum}
+            </span>
+            <div className="flex-1">
+              {cardBody ? (
+                <>
+                  <span className="block text-sm font-bold text-white mb-0.5">{cardHeader.replace(/\*\*/g, '')}</span>
+                  <span className="block text-xs text-brand-muted leading-relaxed">{cardBody}</span>
+                </>
+              ) : (
+                <span className="block text-sm text-brand-text leading-relaxed">{cardHeader}</span>
+              )}
+            </div>
+          </div>
         );
         return;
       }

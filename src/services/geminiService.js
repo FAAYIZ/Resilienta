@@ -27,7 +27,7 @@ export async function generateEmergencyScript(actionType, voiceContext = "") {
   
   if (!apiKey || apiKey.trim() === "" || apiKey === "your_gemini_api_key_here") {
     console.warn(`[GeminiService] API key not found. Using pre-verified fallback script for: ${actionType}`);
-    return getFallbackScript(actionType, "API Key is missing. Please set VITE_GEMINI_API_KEY in your .env file.");
+    return getFallbackScript(actionType);
   }
 
   try {
@@ -51,7 +51,7 @@ export async function generateEmergencyScript(actionType, voiceContext = "") {
     return text;
   } catch (error) {
     console.error("[GeminiService] Error calling Gemini API:", error);
-    return getFallbackScript(actionType, error.message);
+    return getFallbackScript(actionType);
   }
 }
 
@@ -66,12 +66,12 @@ export async function askCopingQuestion(question) {
   
   if (!apiKey || apiKey.trim() === "" || apiKey === "your_gemini_api_key_here") {
     console.warn("[GeminiService] API key not found. Using preset responses for Coping Hub.");
-    return `### Educational Boundary Guide (Offline Mode)
+    return `### 💚 Offline Safety Protocol Active: Displaying pre-verified clinical guidelines.
 
-It looks like the Gemini API Key is missing or invalid. Here are immediate tips for your question: **"${question}"**
+Immediate tips for your question: **"${question}"**
 
 1. **Safety First**: If you or your loved one are in immediate danger of relapse or self-harm, please contact local emergency services or the **988 Suicide & Crisis Lifeline** immediately.
-2. **Clear Boundaries**: State what *you* will do, not what the other person must do. (e.g., "If you use substances in the house, I will ask you to leave for the night," rather than "You must stop using").
+2. **Clear Boundaries**: State what *you* will do, not what the other person must do (e.g., "If you use substances in the house, I will ask you to leave for the night").
 3. **Avoid Confrontation during Use**: Do not attempt to have complex emotional conversations while your loved one is under the influence. Wait until they are sober and cognitive load is lower.
 4. **Oxygen Mask Rule**: You cannot pour from an empty cup. Attend support groups like Al-Anon, Nar-Anon, or SMART Recovery Family & Friends.`;
   }
@@ -93,10 +93,8 @@ It looks like the Gemini API Key is missing or invalid. Here are immediate tips 
     return text;
   } catch (error) {
     console.error("[GeminiService] Error asking coping question:", error);
-    return `### Educational Boundary Guide (Fallback Response)
+    return `### 💚 Offline Safety Protocol Active: Displaying pre-verified clinical guidelines.
     
-We encountered a network error while fetching advice: *"${error.message}"*.
-
 Here are core coping practices you can rely on right now:
 *   **Establish Loving Limits**: Let your loved one know you support their recovery, but you will not shelter them from the natural consequences of active substance use.
 *   **Keep Communication Simple**: When cognitive load is high, use short sentences. Emphasize "I feel" statements rather than accusatory "You did" statements.
@@ -108,10 +106,9 @@ Here are core coping practices you can rely on right now:
  * Local helper to format fallback scripts with a friendly note.
  * 
  * @param {string} type - The script type ('sos', 'de_escalation', 'refusal')
- * @param {string} reason - The error/warning metadata to report in the banner
  * @returns {string} Formatted markdown text
  */
-function getFallbackScript(type, reason) {
+function getFallbackScript(type) {
   const scripts = {
     sos: FALLBACK_SCRIPTS.sos,
     de_escalation: FALLBACK_SCRIPTS.de_escalation,
@@ -121,8 +118,7 @@ function getFallbackScript(type, reason) {
   const selectedScript = scripts[type] || scripts.sos;
   
   return `> [!NOTE]
-> **Resilienta Secure Fallback Mode Enabled**
-> The system is currently running on localized protocols (Reason: ${reason}). These steps are curated from standard SUD crisis resources.
+> **💚 Offline Safety Protocol Active: Displaying pre-verified clinical guidelines.**
 
 ${selectedScript}`;
 }
