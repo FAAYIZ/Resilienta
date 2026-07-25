@@ -110,39 +110,31 @@ export default function App() {
       />
 
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-        {/* Dynamic Welcoming Header Banner */}
-        <section className="bg-gradient-to-r from-slate-900 via-indigo-950/20 to-slate-900 border border-brand-border rounded-3xl p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
-          <div className="space-y-2 z-10">
-            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Resilienta Support Engine Active</span>
-            </span>
-            <h1 className="text-2xl md:text-3xl font-black text-brand-text leading-tight tracking-tight">
+        {/* Compact Page Title Row */}
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-brand-border pb-5 gap-4">
+          <div className="flex items-center space-x-3.5">
+            <div className="bg-gradient-to-tr from-indigo-500 to-rose-500 p-2 rounded-xl shadow-md">
+              <Heart className="h-5 w-5 text-white animate-pulse" />
+            </div>
+            <h1 className="text-2xl font-black text-brand-text tracking-tight leading-none">
               {role === 'individual' 
                 ? 'Resilienta Recovery Companion' 
                 : 'Caregiver Support Hub'
               }
             </h1>
-            <p className="text-sm text-brand-muted max-w-2xl leading-relaxed font-medium">
-              {role === 'individual'
-                ? '1-Tap emergency tools, zero-typing prompts, and physical grounding exercises for immediate relief.'
-                : 'Immediate de-escalation scripts, boundary tools, and supportive guidance for families.'
-              }
-            </p>
+            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${
+              role === 'individual'
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                : 'bg-indigo-500/10 border-indigo-500/30 text-indigo-400'
+            }`}>
+              {role === 'individual' ? 'Active: SUD Individual' : 'Active: Caregiver'}
+            </span>
           </div>
-
-          <div className="bg-slate-900 border border-brand-border px-5 py-4 rounded-2xl flex-shrink-0 flex items-center space-x-3.5 md:max-w-xs shadow-lg">
-            <div className="bg-indigo-500/15 p-2 rounded-xl text-indigo-400">
-              <Heart className="h-5 w-5 animate-pulse" />
-            </div>
-            <div className="space-y-0.5">
-              <span className="block text-xs font-bold text-brand-text">Active Assistance Mode:</span>
-              <span className="block text-sm font-black text-indigo-400 uppercase tracking-wide">
-                {role === 'individual' ? 'SUD Individual' : 'SUD Caregiver'}
-              </span>
-            </div>
-          </div>
-        </section>
+          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-brand-border text-brand-muted">
+            <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
+            <span>Support Engine Active</span>
+          </span>
+        </header>
 
         {/* 1-Tap Emergency Quick Actions */}
         <section aria-label="Quick Action Controls">
